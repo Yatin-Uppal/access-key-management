@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model TokenInfo {
+  id          String   @id @default(uuid())
+  tokenAddress String  @unique
+  name        String?
+  symbol      String?
+  decimals    Int?
+  totalSupply String?
+  owner       String?
+  metadata    Json?    // For additional token metadata
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  lastFetched DateTime @default(now())
+
+  @@index([tokenAddress])
+  @@index([symbol])
+}
+
+model RateLimit {
+  id            String   @id @default(uuid())
+  accessKey     String   @unique
+  requestCount  Int      @default(0)
+  lastResetAt   DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([accessKey])
+}
+
+model AccessKeyValidation {
+  id          String   @id @default(uuid())
+  accessKey   String   @unique
+  isValid     Boolean  @default(true)
+  lastChecked DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([accessKey])
+} 
